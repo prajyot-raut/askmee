@@ -5,10 +5,18 @@ import { Question } from "@/types/quiz";
 import { decodeHtml } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import ProgressBar from "@/components/custom/ProgressBar";
+import Button from "@/components/custom/Button";
+import { Lobster } from "next/font/google";
 
 interface QuizProps {
   questions: Question[];
 }
+
+const lobster = Lobster({
+  variable: "--font-lobster",
+  subsets: ["latin"],
+  weight: "400", // Lobster only supports '400'
+});
 
 const Quiz: React.FC<QuizProps> = ({ questions }) => {
   const [current, setCurrent] = useState(0);
@@ -29,7 +37,7 @@ const Quiz: React.FC<QuizProps> = ({ questions }) => {
     } else {
       setShowScore(true);
     }
-  }, [current, questions, selected, score]);
+  }, [current, questions, selected]);
 
   const handleTimeUp = useCallback(() => {
     if (!selected && !showScore) {
@@ -60,8 +68,13 @@ const Quiz: React.FC<QuizProps> = ({ questions }) => {
         <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#16db65]/20 rounded-full blur-2xl z-0" />
         <div className="relative z-10 p-10">
           <h1 className="text-4xl font-black mb-8 text-[#020202] text-center tracking-tight drop-shadow-lg">
-            <span className="bg-gradient-to-r from-[#FF8200] via-[#FFC100] to-[#16db65] bg-clip-text text-transparent">
-              Quiz App
+            <span
+              className={
+                "bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 bg-clip-text text-6xl text-transparent " +
+                lobster.className
+              }
+            >
+              Askmee
             </span>
           </h1>
           <AnimatePresence mode="wait" custom={direction}>
@@ -78,12 +91,7 @@ const Quiz: React.FC<QuizProps> = ({ questions }) => {
                   Your Score: <span className="text-[#FF8200]">{score}</span> /{" "}
                   {questions.length}
                 </p>
-                <button
-                  className="mt-4 px-10 py-3 bg-gradient-to-r from-[#FF8200] to-[#FFC100] text-white font-bold rounded-xl shadow-lg hover:from-[#FFC100] hover:to-[#16db65] hover:text-[#020202] transition border-2 border-[#FFC100]"
-                  onClick={handleRestart}
-                >
-                  Restart Quiz
-                </button>
+                <Button onclick={handleRestart} text="Restart Quiz" />
               </motion.div>
             ) : (
               <motion.div

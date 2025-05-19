@@ -10,20 +10,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { dummyQuestions } from "@/data/dummyQuestions";
+import Button from "./Button";
 
 interface MenuProps {
   questions: Question[];
   setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
 }
 
-const Menu: React.FC<MenuProps> = ({ questions, setQuestions }) => {
+const Menu: React.FC<MenuProps> = ({ setQuestions }) => {
   const [category, setCategory] = useState("9");
   const [difficulty, setDifficulty] = useState("easy");
 
   const fetchQuestions = async () => {
     try {
       const res = await fetch(
-        `https://opentdb.com/api.php?amount=2&category=${category}&difficulty=${difficulty}&type=multiple`
+        `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`
       );
       const data = await res.json();
       const questions = data.results.map((question: Question) => {
@@ -71,7 +72,7 @@ const Menu: React.FC<MenuProps> = ({ questions, setQuestions }) => {
                 <span className="text-[#FF8200] font-bold">Category:</span>{" "}
               </p>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full cursor-pointer">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -117,7 +118,7 @@ const Menu: React.FC<MenuProps> = ({ questions, setQuestions }) => {
                 </span>{" "}
               </p>
               <Select value={difficulty} onValueChange={setDifficulty}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px] cursor-pointer">
                   <SelectValue placeholder="Difficulty" />
                 </SelectTrigger>
                 <SelectContent>
@@ -130,12 +131,7 @@ const Menu: React.FC<MenuProps> = ({ questions, setQuestions }) => {
           </div>
 
           <div className="flex justify-center mb-4">
-            <button
-              onClick={fetchQuestions}
-              className="mt-4 px-10 py-3 text-white font-bold rounded-xl shadow-lg border-2 border-[#FFC100] relative overflow-hidden bg-gradient-to-r from-[#FF8200] via-[#FFC100] to-[#FF8200] bg-[length:200%_100%] bg-left hover:bg-right transition-[background-position,color] duration-500 ease-in-out"
-            >
-              Start Quiz
-            </button>
+            <Button onclick={fetchQuestions} text="Start Quiz" />
           </div>
         </div>
       </div>
