@@ -9,27 +9,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Quiz from "@/components/custom/Quiz";
+import { dummyQuestions } from "@/data/dummyQuestions";
 
-const Menu = ({}) => {
-  const [questions, setQuestions] = useState<Question[]>([]);
+interface MenuProps {
+  questions: Question[];
+  setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
+}
 
+const Menu: React.FC<MenuProps> = ({ questions, setQuestions }) => {
   const [category, setCategory] = useState("9");
   const [difficulty, setDifficulty] = useState("easy");
 
   const fetchQuestions = async () => {
-    const res = await fetch(
-      `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`
-    );
-    const data = await res.json();
-    const questions = data.results.map((question: Question) => {
-      const options = [...question.incorrect_answers, question.correct_answer];
-      return {
-        ...question,
-        options: options.sort(() => Math.random() - 0.5),
-      };
-    });
-    setQuestions(questions);
+    try {
+      const res = await fetch(
+        `https://opentdb.com/api.php?amount=2&category=${category}&difficulty=${difficulty}&type=multiple`
+      );
+      const data = await res.json();
+      const questions = data.results.map((question: Question) => {
+        const options = [
+          ...question.incorrect_answers,
+          question.correct_answer,
+        ];
+        return {
+          ...question,
+          options: options.sort(() => Math.random() - 0.5),
+        };
+      });
+      setQuestions(questions);
+    } catch (error) {
+      console.log("Error fetching questions:", error);
+      // Fallback to dummy questions in case of an error
+      const fallbackQuestions = dummyQuestions.map((question) => {
+        const options = [
+          ...question.incorrect_answers,
+          question.correct_answer,
+        ];
+        return {
+          ...question,
+          options: options.sort(() => Math.random() - 0.5),
+        };
+      });
+      setQuestions(fallbackQuestions as Question[]);
+    }
   };
 
   return (
@@ -91,15 +113,6 @@ const Menu = ({}) => {
       >
         Fetch Questions
       </button>
-
-      {questions.length > 0 && (
-        <div>
-          <h1 className="text-4xl font-black mb-8 text-[#020202] text-center tracking-tight drop-shadow-lg">
-            Quiz App
-          </h1>
-          <Quiz questions={questions} />
-        </div>
-      )}
     </>
   );
 };

@@ -6,5 +6,4 @@ export interface Question {
   incorrect_answers: string[];
   question: string;
   options: string[];
-  answer: string;
 }
