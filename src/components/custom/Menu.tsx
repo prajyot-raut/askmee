@@ -11,6 +11,13 @@ import {
 } from "@/components/ui/select";
 import { dummyQuestions } from "@/data/dummyQuestions";
 import Button from "./Button";
+import { Lobster } from "next/font/google";
+
+const lobster = Lobster({
+  variable: "--font-lobster",
+  subsets: ["latin"],
+  weight: "400", // Lobster only supports '400'
+});
 
 interface MenuProps {
   questions: Question[];
@@ -60,14 +67,23 @@ const Menu: React.FC<MenuProps> = ({ setQuestions }) => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F7FF] via-[#FFC100]/40 to-[#FF8200]/30">
         <div className="relative bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-0 w-full max-w-lg border-0 overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#FF8200] via-[#FFC100] to-[#16db65] animate-pulse" />
-          <div className="mt-10 p-4">
+          <div className="mt-3 p-4">
             <h1 className="text-3xl text-center font-bold text-[#FF8200]">
-              Welcome to the Askmee
+              Welcome to the
+              <br />
+              <span
+                className={
+                  "bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 bg-clip-text text-6xl text-transparent " +
+                  lobster.className
+                }
+              >
+                Askmee
+              </span>
             </h1>
-            <p className="text-lg text-[#020202]">
-              Choose your quiz settings and start the game!
+            <p className="text-lg mt-7 text-center text-[#ffaa00]">
+              A fun quiz game to test your knowledge!
             </p>
-            <div className="mt-7">
+            <div className="mt-5">
               <p>
                 <span className="text-[#FF8200] font-bold">Category:</span>{" "}
               </p>
