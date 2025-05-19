@@ -9,7 +9,7 @@ interface ProgressBarProps {
   setTime: React.Dispatch<React.SetStateAction<number>>;
   onTimeUp?: () => void;
   maxTime?: number;
-  questionIndex: number; // Add this to trigger timer reset on question change
+  questionIndex: number;
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -19,44 +19,35 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   maxTime = 20,
   questionIndex,
 }) => {
-  // Use useRef to maintain a single timer instance
   const timerRef = useRef<Timer | null>(null);
 
   useEffect(() => {
-    // Create timer instance only once
     if (!timerRef.current) {
       timerRef.current = new Timer();
     }
 
-    // Get the timer instance
     const timer = timerRef.current;
 
-    // Reset and start the timer
     timer.stopTimer();
     timer.clearListeners();
 
-    // Set initial time value before starting timer
     setTime(maxTime);
 
-    // Start timer immediately
     timer.startTimer(maxTime);
 
-    // Set up update callback
     timer.onUpdate((remainingTime) => {
       setTime(remainingTime);
     });
 
-    // Set up end callback
     if (onTimeUp) {
       timer.onEnd(onTimeUp);
     }
 
     return () => {
-      // Clean up when component unmounts or effect is cleaned up
       timer.stopTimer();
       timer.clearListeners();
     };
-  }, [maxTime, setTime, onTimeUp, questionIndex]); // Add questionIndex to dependencies
+  }, [maxTime, setTime, onTimeUp, questionIndex]);
 
   return (
     <div className="mb-4">

@@ -16,7 +16,7 @@ const Quiz: React.FC<QuizProps> = ({ questions }) => {
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
-  const [time, setTime] = useState(20); // Start with max time
+  const [time, setTime] = useState(20);
   const MAX_TIME = 20; // Maximum time per question
 
   const handleNext = useCallback(() => {
