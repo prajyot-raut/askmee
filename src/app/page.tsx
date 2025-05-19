@@ -18,9 +18,6 @@ export default function Home() {
 
       {questions.length > 0 && (
         <div>
-          <h1 className="text-4xl font-black mb-8 text-[#020202] text-center tracking-tight drop-shadow-lg">
-            Quiz App
-          </h1>
           <Quiz questions={questions} />
         </div>
       )}

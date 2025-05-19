@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Question } from "@/types/quiz";
 import { decodeHtml } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion"; // Add this import
+import { motion, AnimatePresence } from "framer-motion";
+import ProgressBar from "@/components/custom/ProgressBar";
 
 interface QuizProps {
   questions: Question[];
@@ -15,39 +16,46 @@ const Quiz: React.FC<QuizProps> = ({ questions }) => {
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
+  const [time, setTime] = useState(20); // Start with max time
+  const MAX_TIME = 20; // Maximum time per question
 
-  const handleOptionClick = (option: string) => {
-    setSelected(option);
-    setDirection(1); // Moving forward
-    handleNext();
-  };
-
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (selected === questions[current].correct_answer) {
-      setScore(score + 1);
+      setScore((prevScore) => prevScore + 1);
     }
     setSelected(null);
     if (current < questions.length - 1) {
-      setCurrent(current + 1);
+      setCurrent((prevCurrent) => prevCurrent + 1);
     } else {
       setShowScore(true);
     }
+  }, [current, questions, selected, score]);
+
+  const handleTimeUp = useCallback(() => {
+    if (!selected && !showScore) {
+      handleNext();
+    }
+  }, [selected, showScore, handleNext]);
+
+  const handleOptionClick = (option: string) => {
+    setSelected(option);
+    setDirection(1);
+    setTimeout(handleNext, 1000);
   };
 
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     setCurrent(0);
     setScore(0);
     setSelected(null);
     setShowScore(false);
-    setDirection(-1); // Moving backward when restarting
-  };
+    setDirection(-1);
+    setTime(MAX_TIME);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F7FF] via-[#FFC100]/40 to-[#FF8200]/30">
       <div className="relative bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-0 w-full max-w-lg border-0 overflow-hidden">
-        {/* Decorative Gradient Bar */}
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#FF8200] via-[#FFC100] to-[#16db65] animate-pulse" />
-        {/* Decorative Circles */}
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-[#FFC100]/30 rounded-full blur-2xl z-0" />
         <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#16db65]/20 rounded-full blur-2xl z-0" />
         <div className="relative z-10 p-10">
@@ -86,6 +94,13 @@ const Quiz: React.FC<QuizProps> = ({ questions }) => {
                 exit={{ opacity: 0, x: -100 * direction }}
                 transition={{ duration: 0.4 }}
               >
+                <ProgressBar
+                  time={time}
+                  setTime={setTime}
+                  onTimeUp={handleTimeUp}
+                  maxTime={MAX_TIME}
+                  questionIndex={current}
+                />
                 <div className="mb-8 text-2xl font-bold text-[#020202] text-center bg-[#F7F7FF]/80 rounded-lg py-6 px-4 shadow border-b-4 border-[#FFC100]">
                   <span className="text-[#FF8200] mr-2">Q{current + 1}.</span>{" "}
                   {decodeHtml(questions[current].question)}
@@ -96,14 +111,14 @@ const Quiz: React.FC<QuizProps> = ({ questions }) => {
                       key={option}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      transition={{ duration: 0.3, delay: index * 0.3 }}
                       onClick={() => handleOptionClick(option)}
                       className={`w-full px-6 py-4 rounded-2xl border-2 text-lg font-semibold transition text-left shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FFC100] focus:ring-offset-2
                           ${
                             selected === option
                               ? option === questions[current].correct_answer
-                                ? "bg-gradient-to-r from-[#16db65] to-[#F7F7FF] border-[#16db65] text-[#020202] scale-105"
-                                : "bg-gradient-to-r from-[#FF8200] to-[#FFC100] border-[#FF8200] text-white scale-105"
+                                ? "bg-gradient-to-r from-[#16db65] to-[#2bff01] border-[#16db65] text-[#020202] scale-105"
+                                : "bg-gradient-to-r from-[#ff0000] to-[#ff0000] border-[#ff0000] text-white scale-105"
                               : "bg-[#F7F7FF]/80 border-[#FFC100] text-[#020202] hover:bg-[#FFC100]/30 hover:scale-105"
                           }
                         `}
