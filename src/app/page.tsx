@@ -11,14 +11,18 @@ export default function Home() {
   return (
     <>
       {questions.length === 0 && (
-        <div>
-          <Menu questions={questions} setQuestions={setQuestions} />
+        <div data-oid="-kdmkfp">
+          <Menu
+            questions={questions}
+            setQuestions={setQuestions}
+            data-oid="g75dgc7"
+          />
         </div>
       )}
 
       {questions.length > 0 && (
-        <div>
-          <Quiz questions={questions} />
+        <div data-oid="86rg49p">
+          <Quiz questions={questions} data-oid="u_v3ci8" />
         </div>
       )}
     </>

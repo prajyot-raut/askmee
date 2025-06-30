@@ -31,7 +31,7 @@ const Menu: React.FC<MenuProps> = ({ setQuestions }) => {
   const fetchQuestions = async () => {
     try {
       const res = await fetch(
-        `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`
+        `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`,
       );
       const data = await res.json();
       const questions = data.results.map((question: Question) => {
@@ -39,6 +39,7 @@ const Menu: React.FC<MenuProps> = ({ setQuestions }) => {
           ...question.incorrect_answers,
           question.correct_answer,
         ];
+
         return {
           ...question,
           options: options.sort(() => Math.random() - 0.5),
@@ -53,6 +54,7 @@ const Menu: React.FC<MenuProps> = ({ setQuestions }) => {
           ...question.incorrect_answers,
           question.correct_answer,
         ];
+
         return {
           ...question,
           options: options.sort(() => Math.random() - 0.5),
@@ -65,8 +67,9 @@ const Menu: React.FC<MenuProps> = ({ setQuestions }) => {
   return (
     <>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F7FF] via-[#FFC100]/40 to-[#FF8200]/30">
-        <div className="relative bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-0 w-full max-w-lg border-0 overflow-hidden">
+        <div className="relative bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-0 max-w-lg border-0 overflow-hidden w-[416px] mr-[20px] mb-0 ml-[20px]">
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#FF8200] via-[#FFC100] to-[#16db65] animate-pulse" />
+
           <div className="mt-3 p-4">
             <h1 className="text-3xl text-center font-bold text-[#FF8200]">
               Welcome to the
@@ -130,7 +133,7 @@ const Menu: React.FC<MenuProps> = ({ setQuestions }) => {
             <div className="mt-7">
               <p>
                 <span className="text-[#FF8200] font-bold">
-                  Difficulty Level:
+                  Difficulty Level: something
                 </span>{" "}
               </p>
               <Select value={difficulty} onValueChange={setDifficulty}>
